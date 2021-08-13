@@ -1,2 +1,2 @@
 # hotel-udemy
-project for uadacity java programing nondegree
+project for udacity java programing nondegree
