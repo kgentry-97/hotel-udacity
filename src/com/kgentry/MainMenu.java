@@ -36,6 +36,7 @@ public class MainMenu {
             try {
                 menuOption = scanner.nextInt();
                 switch (menuOption) {
+                    case 1 -> reserveRoom(scanner);
                     case 2 -> findReservation(scanner);
                     case 3 -> createAccount(scanner);
                     case 4 -> adminMenu.adminMenuSelect();
@@ -71,6 +72,22 @@ public class MainMenu {
         else {
             System.out.println("No Reservation found");
         }
+
+    }
+
+    public void reserveRoom(Scanner reserveScanner){
+
+        System.out.println("Do you have a account: yes or no");
+        String haveAccount = reserveScanner.nextLine();
+        if(haveAccount.equalsIgnoreCase("no") || haveAccount.equalsIgnoreCase("n")){
+            createAccount(reserveScanner);
+        }
+        else{
+            System.out.println("please enter email:");
+            String email = reserveScanner.nextLine();
+            hotelResource.getCustomer(email);
+        }
+
 
     }
 }

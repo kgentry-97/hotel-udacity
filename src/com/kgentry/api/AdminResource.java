@@ -2,7 +2,6 @@ package com.kgentry.api;
 
 import com.kgentry.model.Customer;
 import com.kgentry.model.IRoom;
-import com.kgentry.model.Reservation;
 import com.kgentry.service.CustomerService;
 import com.kgentry.service.ReservationService;
 
@@ -39,13 +38,7 @@ public class AdminResource {
     }
 
     public void displayAllReservations(){
-        Collection<Reservation> reservations = reservationService.getReservations();
-        if(!reservations.isEmpty()){
-            reservations.forEach(System.out::println);
-        }
-        else {
-            System.out.println("no reservations");
-        }
+        reservationService.printAllReservations();
 
     }
 

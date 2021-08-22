@@ -7,10 +7,11 @@ import com.kgentry.model.Reservation;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class ReservationService {
 
-    private HashMap<String, Reservation> reservations = new HashMap<>();
+    Collection<Reservation> reservations = new LinkedList<>();
     private static ReservationService reservationService;
     private HashMap<String, IRoom> rooms = new HashMap<>();
 
@@ -48,11 +49,23 @@ public class ReservationService {
     }
 
     public Collection<Reservation> getCustomerReservation(Customer customer){
-        return ;
+        Collection<Reservation> foundResvations = new LinkedList<>();
+        for(Reservation reservation: reservations){
+            if(reservation.getCustomer().equals(customer)){
+                foundResvations.add(reservation);
+            }
+        }
+        return foundResvations;
     }
 
     public void printAllReservations(){
-
+        Collection<Reservation> reservations = reservationService.getReservations();
+        if(!reservations.isEmpty()){
+            reservations.forEach(System.out::println);
+        }
+        else {
+            System.out.println("no reservations");
+        }
     }
 
     public Collection<IRoom> getAllRooms(){
