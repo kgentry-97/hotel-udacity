@@ -29,7 +29,7 @@ public class ReservationService {
     }
 
     public void setReservations(Collection<Reservation> reservations) {
-        this.reservations = reservations;
+        this.reservations.addAll(reservations);
     }
 
     public void addRoom(IRoom room){
@@ -37,25 +37,37 @@ public class ReservationService {
     }
 
     public IRoom getARoom(String roomId){
-        return null;
+        return rooms.get(roomId);
     }
 
-    public Reservation reserveARoom(Customer customer, IRoom room, Date checkinDate, Date checkOutDate){
-        return null;
+    public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){
+        Reservation reservation = new Reservation(customer, room,checkInDate, checkOutDate);
+        Collection<Reservation> newReservation = new LinkedList<>();
+        newReservation.add(reservation);
+        setReservations(newReservation);
+        return reservation;
     }
 
     public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
-        return null;
+        Collection<IRoom> availableRooms = getAllRooms();
+        Collection<Reservation> allReservation = getReservations();
+
+        for(Reservation reservation: allReservation){
+            if(!checkOutDate.after(reservation.getCheckIndate()) && !checkInDate.before(reservation.getCheckOutDate())){
+                availableRooms.remove(reservation.getRoom());
+            }
+        }
+        return availableRooms;
     }
 
     public Collection<Reservation> getCustomerReservation(Customer customer){
-        Collection<Reservation> foundResvations = new LinkedList<>();
+        Collection<Reservation> foundReservations = new LinkedList<>();
         for(Reservation reservation: reservations){
             if(reservation.getCustomer().equals(customer)){
-                foundResvations.add(reservation);
+                foundReservations.add(reservation);
             }
         }
-        return foundResvations;
+        return foundReservations;
     }
 
     public void printAllReservations(){

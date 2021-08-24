@@ -19,7 +19,7 @@ public class CustomerService {
         return customerService;
     }
     
-    public void addCustomer(String email, String firstName, String lastName) {
+    public void addCustomer(String firstName, String lastName, String email) {
         Customer customer = new Customer(firstName, lastName, email);
         customers.put(email, customer );
     }

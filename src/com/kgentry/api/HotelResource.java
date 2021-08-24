@@ -32,11 +32,12 @@ public class HotelResource {
     }
 
     public IRoom getRoom(String roomNumber){
-        return null;
+        return reservationService.getARoom(roomNumber);
     }
 
     public Reservation bookARoom(String customerEmail, IRoom room, Date checkInDate, Date checkOutDate){
-        return null;
+        Customer customer = getCustomer(customerEmail);
+        return ReservationService.getInstance().reserveARoom(customer, room, checkInDate, checkOutDate);
     }
 
     public Collection<Reservation> getCustomerReservations(String customerEmail){
@@ -44,6 +45,6 @@ public class HotelResource {
     }
 
     public Collection<IRoom> findARoom(Date checkInDate, Date checkOutDate){
-        return null;
+        return reservationService.findRooms(checkInDate, checkOutDate);
     }
 }
