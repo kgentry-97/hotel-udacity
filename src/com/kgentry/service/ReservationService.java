@@ -53,7 +53,7 @@ public class ReservationService {
         Collection<Reservation> allReservation = getReservations();
 
         for(Reservation reservation: allReservation){
-            if(!checkOutDate.after(reservation.getCheckIndate()) && !checkInDate.before(reservation.getCheckOutDate())){
+            if(checkInDate.before(reservation.getCheckOutDate()) && checkOutDate.after(reservation.getCheckIndate())){
                 availableRooms.remove(reservation.getRoom());
             }
         }

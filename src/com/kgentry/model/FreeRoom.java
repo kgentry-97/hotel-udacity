@@ -9,6 +9,6 @@ public class FreeRoom extends Room{
 
     @Override
     public String toString(){
-        return String.format("Room: %s has a %s bed that cost free", getRoomNumber(), getRoomType());
+        return String.format("Room: %s has a %s bed that is free", getRoomNumber(), getRoomType());
     }
 }

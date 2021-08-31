@@ -7,10 +7,7 @@ import com.kgentry.model.Reservation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * @author Kansas Gentry
@@ -71,7 +68,7 @@ public class MainMenu {
     }
 
     public void createAccount(Scanner accountScanner, String email) {
-        System.out.println("could find account please create one");
+        System.out.println("could not find an account please create one");
         System.out.println("Enter First Name: ");
         String firstName = accountScanner.nextLine();
         System.out.println("Enter Last name: ");
@@ -92,71 +89,91 @@ public class MainMenu {
     }
 
     public void reserveRoom(Scanner reserveScanner) {
-        boolean doneLookingForRooms = false;
-        IRoom bookedRoom = null;
-        Date checkInDate;
-        Date checkOutDate;
+        String bookedRoom = null;
+        Date checkInDate = getDate(reserveScanner, "CheckIn");
+        Date checkOutDate = getDate(reserveScanner, "CheckOut");
+        Collection<IRoom> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
 
-        do {
-            checkInDate = getDate(reserveScanner, "CheckIn");
-            checkOutDate = getDate(reserveScanner, "CheckOut");
-            Collection<IRoom> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
-
-            if (!availableRooms.isEmpty()) {
-                System.out.println("the following rooms are available for your stay");
-               for(IRoom room: availableRooms){
-                    System.out.println(room.toString());
-                }
-                System.out.println("please enter Room number you would like reserve: ");
-                String roomInput = reserveScanner.nextLine();
-                bookedRoom = hotelResource.getRoom(roomInput);
-                doneLookingForRooms = true;
-            }
-            else {
-                System.out.println("No rooms available for you dates");
-
-                try {
-                    System.out.println("Would you like to try different dates: yes or no");
-                    String newdates = reserveScanner.nextLine();
-                    if (newdates.equalsIgnoreCase("no") || newdates.equalsIgnoreCase("n")) {
-                        System.out.println("exiting to main menu");
-                        return;
+        if (!availableRooms.isEmpty()) {
+            bookedRoom = getBookedRoom(reserveScanner, checkInDate, checkOutDate, availableRooms);
+        }
+        if(bookedRoom == null || availableRooms.isEmpty()) {
+            System.out.println("Autochecking up to week for other options");
+            for(int i  =1; i <= 7; i++) {
+                Date newCheckInDate = addDate(checkInDate, i);
+                Date newCheckOutDate = addDate(checkOutDate, i);
+                availableRooms.clear();
+                availableRooms.addAll(hotelResource.findARoom(newCheckInDate, newCheckOutDate));
+                if(!availableRooms.isEmpty()){
+                    printAvailableRooms(availableRooms, newCheckInDate, newCheckOutDate);
+                    bookedRoom = getBookedRoom(reserveScanner, newCheckInDate, newCheckOutDate, availableRooms);
+                    if(bookedRoom != null ){
+                       break;
                     }
-                } catch (IllegalArgumentException ex) {
-                    System.out.println("invalid response please try again");
                 }
             }
-
-        }while (!doneLookingForRooms);
-
-        System.out.println("Enter email for account: ");
-        String email = reserveScanner.nextLine();
-        Customer customer = hotelResource.getCustomer(email);
-        if (customer.getEmail() == null) {
-            createAccount(reserveScanner, email);
-            customer = hotelResource.getCustomer(email);
         }
 
-        Reservation reservation = hotelResource.bookARoom(email,bookedRoom ,checkInDate, checkOutDate );
-        System.out.println("room reserved successfully with");
-        System.out.println(reservation.toString());
+        if(bookedRoom != null) {
 
+            System.out.println("Enter email for account: ");
+            String email = reserveScanner.nextLine();
+            Customer customer = hotelResource.getCustomer(email);
+            if (customer == null) {
+                createAccount(reserveScanner, email);
+            }
+
+            IRoom room = hotelResource.getRoom(bookedRoom);
+            Reservation reservation = hotelResource.bookARoom(email, room, checkInDate, checkOutDate);
+            System.out.println("room reserved successfully:");
+            System.out.println(reservation.toString());
+        }
+        else{
+            System.out.println("Returning to main menu");
+        }
+
+    }
+
+    private String getBookedRoom(Scanner reserveScanner, Date checkInDate, Date checkOutDate, Collection<IRoom> availableRooms) {
+        String bookedRoom = null;
+        printAvailableRooms(availableRooms, checkInDate, checkOutDate);
+        System.out.println("Would you like to book one of these rooms: yes or no");
+        String bookRoom = reserveScanner.nextLine();
+        if(bookRoom.equalsIgnoreCase("yes") || bookRoom.equalsIgnoreCase("y")){
+            System.out.println("enter the room number you would like:");
+            bookedRoom = reserveScanner.nextLine();
+        }
+        return bookedRoom;
+    }
+
+    private void printAvailableRooms(Collection<IRoom> availableRooms, Date checkInDate, Date checkOutDate) {
+        System.out.printf("the following rooms are available for your stay on %s to %s\n", checkInDate, checkOutDate);
+        for (IRoom room : availableRooms) {
+            System.out.println(room.toString());
+        }
     }
 
     private Date getDate(Scanner reserveScanner, String whichDate) {
         boolean finished = false;
-        SimpleDateFormat format = new SimpleDateFormat("mm-dd-yyy");
-        Date userdate = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyy");
+        Date userDate = new Date();
         do {
-            System.out.println(String.format("enter %s date with format : %s", whichDate, format.toPattern()));
+            System.out.printf("enter %s date with format : %s\n", whichDate, format.toPattern());
             String checkout = reserveScanner.nextLine();
             try {
-                userdate = format.parse(checkout);
+                userDate = format.parse(checkout);
                 finished = true;
             } catch (ParseException ex) {
-                System.out.println("please enter a a correct formatted date: (mm-dd-yyyy)");
+                System.out.println("please enter a correct formatted date: (MM-dd-yyyy)");
             }
         } while (!finished);
-        return userdate;
+        return userDate;
+    }
+
+    private Date addDate(Date orgdate, int plusNum){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(orgdate);
+        calendar.add(Calendar.DATE,plusNum );
+        return calendar.getTime();
     }
 }

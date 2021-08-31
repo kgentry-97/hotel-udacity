@@ -1,10 +1,7 @@
 package com.kgentry;
 
 import com.kgentry.api.AdminResource;
-import com.kgentry.model.Customer;
-import com.kgentry.model.IRoom;
-import com.kgentry.model.Room;
-import com.kgentry.model.RoomType;
+import com.kgentry.model.*;
 
 import java.util.*;
 
@@ -71,7 +68,13 @@ public class AdminMenu {
             catch(IllegalArgumentException ex){
                 System.out.println("invalid room type try again");
             }
-            Room room = new Room(roomNum, roomPrice , roomInput);
+            Room room;
+            if (roomPrice == 0.0){
+                room = new FreeRoom(roomNum,roomInput);
+            }
+            else {
+                room = new Room(roomNum, roomPrice, roomInput);
+            }
             newRooms.add(room);
 
             System.out.println("Would you like to add more rooms: yes or no");
