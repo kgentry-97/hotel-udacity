@@ -16,7 +16,7 @@ public enum RoomType {
 
     public final int number;
 
-    private RoomType( int number){
+    RoomType(int number){
         this.number = number;
     }
 

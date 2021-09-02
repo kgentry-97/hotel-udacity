@@ -9,18 +9,16 @@ import java.util.Collection;
 import java.util.List;
 
 public class AdminResource {
-    private static AdminResource adminResource;
+    private static final AdminResource adminResource = new AdminResource();
     private final ReservationService reservationService = ReservationService.getInstance();
     private final CustomerService customerService = CustomerService.getInstance();
 
     private AdminResource(){}
 
     public static AdminResource getInstance(){
-        if(adminResource == null){
-            adminResource = new AdminResource();
-        }
         return adminResource;
     }
+
     public Customer getCustomer(String email){
         return customerService.getCustomer(email);
     }

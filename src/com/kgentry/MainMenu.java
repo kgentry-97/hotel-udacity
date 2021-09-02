@@ -92,26 +92,14 @@ public class MainMenu {
         String bookedRoom = null;
         Date checkInDate = getDate(reserveScanner, "CheckIn");
         Date checkOutDate = getDate(reserveScanner, "CheckOut");
-        Collection<IRoom> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
+        Collection<IRoom> checkedAvailableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
 
-        if (!availableRooms.isEmpty()) {
-            bookedRoom = getBookedRoom(reserveScanner, checkInDate, checkOutDate, availableRooms);
+        if (!checkedAvailableRooms.isEmpty()) {
+            bookedRoom = getBookedRoom(reserveScanner, checkInDate, checkOutDate, checkedAvailableRooms);
         }
-        if(bookedRoom == null || availableRooms.isEmpty()) {
+        if(bookedRoom == null || checkedAvailableRooms.isEmpty()) {
             System.out.println("Autochecking up to week for other options");
-            for(int i  =1; i <= 7; i++) {
-                Date newCheckInDate = addDate(checkInDate, i);
-                Date newCheckOutDate = addDate(checkOutDate, i);
-                availableRooms.clear();
-                availableRooms.addAll(hotelResource.findARoom(newCheckInDate, newCheckOutDate));
-                if(!availableRooms.isEmpty()){
-                    printAvailableRooms(availableRooms, newCheckInDate, newCheckOutDate);
-                    bookedRoom = getBookedRoom(reserveScanner, newCheckInDate, newCheckOutDate, availableRooms);
-                    if(bookedRoom != null ){
-                       break;
-                    }
-                }
-            }
+            bookedRoom = findAltRoom(reserveScanner, bookedRoom, checkInDate, checkOutDate);
         }
 
         if(bookedRoom != null) {
@@ -129,9 +117,25 @@ public class MainMenu {
             System.out.println(reservation.toString());
         }
         else{
+            System.out.println("no room found");
             System.out.println("Returning to main menu");
         }
 
+    }
+
+    private String findAltRoom(Scanner reserveScanner, String bookedRoom, Date checkInDate, Date checkOutDate) {
+        for(int i  =1; i <= 7; i++) {
+            Date newCheckInDate = addDate(checkInDate, i);
+            Date newCheckOutDate = addDate(checkOutDate, i);
+            Collection<IRoom> altAvailableRooms =(hotelResource.findARoom(newCheckInDate, newCheckOutDate));
+            if(!altAvailableRooms.isEmpty()){
+                bookedRoom = getBookedRoom(reserveScanner, newCheckInDate, newCheckOutDate, altAvailableRooms);
+                if(bookedRoom != null ){
+                   break;
+                }
+            }
+        }
+        return bookedRoom;
     }
 
     private String getBookedRoom(Scanner reserveScanner, Date checkInDate, Date checkOutDate, Collection<IRoom> availableRooms) {

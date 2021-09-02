@@ -3,19 +3,15 @@ package com.kgentry.service;
 import com.kgentry.model.Customer;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CustomerService {
-    private static CustomerService customerService;
-    private final Map<String, Customer> customers = new HashMap<>();
+    private static final CustomerService customerService = new CustomerService();
+    private final ConcurrentHashMap<String, Customer> customers = new ConcurrentHashMap<>();
     
     private CustomerService(){}
     
-    public static CustomerService getInstance(){
-        if(customerService == null){
-            customerService = new CustomerService();
-        }
+    public synchronized static CustomerService getInstance(){
         return customerService;
     }
     

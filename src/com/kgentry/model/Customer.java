@@ -6,7 +6,7 @@ public class Customer {
     private String firstName;
     private String lastName;
     private String email;
-    private String emailPattern = "^(.+)@(.+).(.+)$";
+    private final String emailPattern = "^(.+)@(.+).(.+)$";
     Pattern pattern = Pattern.compile(emailPattern);
 
     public Customer(String firstName, String lastName, String email) {
@@ -24,28 +24,16 @@ public class Customer {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     @Override
     public String toString(){
-        return String.format("Customer name: %s %s email: %s", firstName, lastName, email);
+        return String.format("Customer name: %s %s email: %s", getFirstName(), getLastName(), getEmail());
     }
 }

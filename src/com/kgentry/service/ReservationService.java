@@ -6,21 +6,17 @@ import com.kgentry.model.Reservation;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ReservationService {
-
+    private static final ReservationService reservationService = new ReservationService();
     Collection<Reservation> reservations = new LinkedList<>();
-    private static ReservationService reservationService;
-    private HashMap<String, IRoom> rooms = new HashMap<>();
+    private final ConcurrentHashMap<String, IRoom> rooms = new ConcurrentHashMap<>();
 
     private ReservationService(){}
 
-    public static ReservationService getInstance(){
-        if(reservationService == null){
-            reservationService = new ReservationService();
-        }
+    public synchronized static ReservationService getInstance(){
         return reservationService;
     }
 

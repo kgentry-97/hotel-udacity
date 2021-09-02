@@ -5,13 +5,13 @@ import java.util.Date;
 public class Reservation {
     private Customer customer;
     private IRoom room;
-    private Date checkIndate;
+    private Date checkInDate;
     private Date checkOutDate;
 
-    public Reservation(Customer customer, IRoom room, Date checkIndate, Date checkOutDate) {
+    public Reservation(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
         this.customer = customer;
         this.room = room;
-        this.checkIndate = checkIndate;
+        this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
     }
 
@@ -32,11 +32,11 @@ public class Reservation {
     }
 
     public Date getCheckIndate() {
-        return checkIndate;
+        return checkInDate;
     }
 
     public void setCheckIndate(Date checkIndate) {
-        this.checkIndate = checkIndate;
+        this.checkInDate = checkIndate;
     }
 
     public Date getCheckOutDate() {
@@ -49,8 +49,8 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return String.format("customer: %s %s has a reservation for room %s from %s to %s", customer.getFirstName(),
-                customer.getLastName(), room.getRoomNumber(), checkIndate, checkOutDate);
+        return String.format("customer: %s %s has a reservation for room  %s that cost %s from %s to %s", customer.getFirstName(),
+                customer.getLastName(), room.getRoomNumber(),room.getRoomPrice(), getCheckIndate(), getCheckOutDate());
     }
 
 
