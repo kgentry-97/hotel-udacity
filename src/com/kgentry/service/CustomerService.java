@@ -3,11 +3,11 @@ package com.kgentry.service;
 import com.kgentry.model.Customer;
 
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashSet;
 
 public class CustomerService {
     private static final CustomerService customerService = new CustomerService();
-    private final ConcurrentHashMap<String, Customer> customers = new ConcurrentHashMap<>();
+    private final Collection<Customer> customers = new HashSet<>();
     
     private CustomerService(){}
     
@@ -17,15 +17,21 @@ public class CustomerService {
     
     public void addCustomer(String firstName, String lastName, String email) {
         Customer customer = new Customer(firstName, lastName, email);
-        customers.put(email, customer );
+        customers.add(customer);
     }
 
     public Customer getCustomer(String customerEmail) {
-        return customers.get(customerEmail);
+        Customer foundCustomer = null;
+        for (Customer customer : customers) {
+            if (customer.getEmail().equals(customerEmail)) {
+                foundCustomer = customer;
+            }
+        }
+        return foundCustomer;
     }
 
     public Collection<Customer> getAllCustomers() {
-        return customers.values();
+        return customers;
     }
 
 }

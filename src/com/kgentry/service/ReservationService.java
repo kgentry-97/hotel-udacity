@@ -7,16 +7,21 @@ import com.kgentry.model.Reservation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
+
+;
+
 
 public class ReservationService {
     private static final ReservationService reservationService = new ReservationService();
-    private Collection<Reservation> reservations = new LinkedList<>();
-    private final Collection<IRoom> rooms = new ArrayList<>();
+    private Collection<Reservation> reservations = new HashSet<>();
+    private static final Collection<IRoom> rooms = new ArrayList<>();
 
-    private ReservationService(){}
+    private ReservationService() {
+    }
 
-    public synchronized static ReservationService getInstance(){
+    public synchronized static ReservationService getInstance() {
         return reservationService;
     }
 
@@ -43,17 +48,16 @@ public class ReservationService {
     }
 
     public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){
-        Reservation reservation = new Reservation(customer, room,checkInDate, checkOutDate);
-        Collection<Reservation> newReservation = new LinkedList<>();
+        Reservation reservation = new Reservation(customer, room, checkInDate, checkOutDate);
+        Collection<Reservation> newReservation = new HashSet<>();
         newReservation.add(reservation);
         setReservations(newReservation);
         return reservation;
     }
 
     public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
-        Collection<IRoom> availableRooms = getAllRooms();
+        Collection<IRoom> availableRooms = new ArrayList<>(rooms);
         Collection<Reservation> allReservation = getReservations();
-
         for(Reservation reservation: allReservation){
             if(checkInDate.before(reservation.getCheckOutDate()) && checkOutDate.after(reservation.getCheckIndate())){
                 availableRooms.remove(reservation.getRoom());

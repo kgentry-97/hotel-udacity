@@ -2,11 +2,20 @@ package com.kgentry;
 
 import com.kgentry.api.AdminResource;
 import com.kgentry.api.HotelResource;
-import com.kgentry.model.*;
+import com.kgentry.model.Customer;
+import com.kgentry.model.FreeRoom;
+import com.kgentry.model.IRoom;
+import com.kgentry.model.Room;
+import com.kgentry.model.RoomType;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
 
 public class AdminMenu {
     AdminResource adminResource = AdminResource.getInstance();
@@ -43,7 +52,7 @@ public class AdminMenu {
                     default -> System.out.println("invalid number entered please try again");
                 }
             } catch (InputMismatchException | ParseException ex) {
-                System.out.println("Invalid input only numbers expected");
+                System.out.println("invalid input please try again");
                 scanner.nextLine();
             }
         } while (!adminFinished);
@@ -51,11 +60,10 @@ public class AdminMenu {
     }
 
     public void addRooms(Scanner roomScanner) {
-        //Scanner roomScanner = new Scanner(System.in);
         RoomType roomInput = null;
         String roomNum = null;
         double roomPrice = 0.0;
-        boolean finshed = false;
+        boolean finished = false;
         List<IRoom> newRooms = new ArrayList<>();
 
         do {
@@ -84,9 +92,9 @@ public class AdminMenu {
             System.out.println("Would you like to add more rooms: yes or no");
             String toEnd = roomScanner.nextLine();
             if (toEnd.equalsIgnoreCase("no") || toEnd.equalsIgnoreCase("n")) {
-                finshed = true;
+                finished = true;
             }
-        } while (!finshed);
+        } while (!finished);
 
         adminResource.AddRoom(newRooms);
     }

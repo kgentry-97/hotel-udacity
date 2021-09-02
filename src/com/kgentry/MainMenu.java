@@ -7,7 +7,11 @@ import com.kgentry.model.Reservation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 /**
  * @author Kansas Gentry
@@ -48,9 +52,8 @@ public class MainMenu {
                     case 5 -> finished = true;
                     default -> System.out.println("enter an invalid number please try again");
                 }
-            } catch (InputMismatchException ex) {
-                System.out.println("invalid input only numbers expected");
-                scanner.nextLine();
+            } catch (InputMismatchException | IllegalArgumentException ex) {
+                System.out.println("invalid input please try again");
             }
         } while (!finished);
 
@@ -98,8 +101,10 @@ public class MainMenu {
             bookedRoom = getBookedRoom(reserveScanner, checkInDate, checkOutDate, checkedAvailableRooms);
         }
         if(bookedRoom == null || checkedAvailableRooms.isEmpty()) {
-            System.out.println("Autochecking up to week for other options");
-            bookedRoom = findAltRoom(reserveScanner, checkInDate, checkOutDate);
+            System.out.println("looking for alternative dates:");
+            System.out.println("how many days in the future would you like try");
+            String additionalDays = reserveScanner.nextLine();
+            bookedRoom = findAltRoom(reserveScanner, checkInDate, checkOutDate, additionalDays);
         }
 
         if(bookedRoom != null) {
@@ -123,16 +128,17 @@ public class MainMenu {
 
     }
 
-    private String findAltRoom(Scanner reserveScanner, Date checkInDate, Date checkOutDate) {
+    private String findAltRoom(Scanner reserveScanner, Date checkInDate, Date checkOutDate, String additionalDays) {
         String bookedRoom = null;
-        for(int i  =1; i <= 7; i++) {
+        int addDays = Integer.parseInt(additionalDays);
+        for (int i = 1; i <= addDays; i++) {
             Date newCheckInDate = addDate(checkInDate, i);
             Date newCheckOutDate = addDate(checkOutDate, i);
-            Collection<IRoom> altAvailableRooms =(hotelResource.findARoom(newCheckInDate, newCheckOutDate));
-            if(!altAvailableRooms.isEmpty()){
+            Collection<IRoom> altAvailableRooms = (hotelResource.findARoom(newCheckInDate, newCheckOutDate));
+            if (!altAvailableRooms.isEmpty()) {
                 bookedRoom = getBookedRoom(reserveScanner, newCheckInDate, newCheckOutDate, altAvailableRooms);
-                if(bookedRoom != null ){
-                   break;
+                if (bookedRoom != null) {
+                    break;
                 }
             }
         }
@@ -175,10 +181,10 @@ public class MainMenu {
         return userDate;
     }
 
-    private Date addDate(Date orgdate, int plusNum){
+    private Date addDate(Date orgDate, int plusNum) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(orgdate);
-        calendar.add(Calendar.DATE,plusNum );
+        calendar.setTime(orgDate);
+        calendar.add(Calendar.DATE, plusNum);
         return calendar.getTime();
     }
 }
