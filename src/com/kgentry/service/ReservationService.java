@@ -4,15 +4,15 @@ import com.kgentry.model.Customer;
 import com.kgentry.model.IRoom;
 import com.kgentry.model.Reservation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ReservationService {
     private static final ReservationService reservationService = new ReservationService();
-    Collection<Reservation> reservations = new LinkedList<>();
-    private final ConcurrentHashMap<String, IRoom> rooms = new ConcurrentHashMap<>();
+    private Collection<Reservation> reservations = new LinkedList<>();
+    private final Collection<IRoom> rooms = new ArrayList<>();
 
     private ReservationService(){}
 
@@ -29,11 +29,17 @@ public class ReservationService {
     }
 
     public void addRoom(IRoom room){
-        rooms.put(room.getRoomNumber(), room);
+        rooms.add(room);
     }
 
     public IRoom getARoom(String roomId){
-        return rooms.get(roomId);
+        IRoom foundRoom = null;
+        for (IRoom room: rooms) {
+            if(room.getRoomNumber().equals(roomId)){
+                foundRoom = room;
+            }
+        }
+        return foundRoom;
     }
 
     public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){
@@ -77,7 +83,7 @@ public class ReservationService {
     }
 
     public Collection<IRoom> getAllRooms(){
-        return rooms.values();
+        return rooms;
     }
 
 }

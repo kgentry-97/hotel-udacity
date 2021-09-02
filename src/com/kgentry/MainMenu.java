@@ -99,7 +99,7 @@ public class MainMenu {
         }
         if(bookedRoom == null || checkedAvailableRooms.isEmpty()) {
             System.out.println("Autochecking up to week for other options");
-            bookedRoom = findAltRoom(reserveScanner, bookedRoom, checkInDate, checkOutDate);
+            bookedRoom = findAltRoom(reserveScanner, checkInDate, checkOutDate);
         }
 
         if(bookedRoom != null) {
@@ -123,7 +123,8 @@ public class MainMenu {
 
     }
 
-    private String findAltRoom(Scanner reserveScanner, String bookedRoom, Date checkInDate, Date checkOutDate) {
+    private String findAltRoom(Scanner reserveScanner, Date checkInDate, Date checkOutDate) {
+        String bookedRoom = null;
         for(int i  =1; i <= 7; i++) {
             Date newCheckInDate = addDate(checkInDate, i);
             Date newCheckOutDate = addDate(checkOutDate, i);
