@@ -15,8 +15,8 @@ import java.util.LinkedList;
 
 public class ReservationService {
     private static final ReservationService reservationService = new ReservationService();
-    private Collection<Reservation> reservations = new HashSet<>();
-    private static final Collection<IRoom> rooms = new ArrayList<>();
+    private final Collection<Reservation> reservations = new HashSet<>();
+    private static final Collection<IRoom> rooms = new HashSet<>();
 
     private ReservationService() {
     }

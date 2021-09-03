@@ -137,11 +137,13 @@ public class AdminMenu {
         newRooms.add(room1);
         newRooms.add(room2);
         newRooms.add(room3);
+        newRooms.add(room2);
         adminResource.AddRoom(newRooms);
 
         hotelResource.createACustomer("kak@eje.ne", "jsjew", "ejjhe");
         Date checkInDate = createDate("12-11-2021");
         Date checkOutDate = createDate("12-14-2021");
+        hotelResource.bookARoom("kak@eje.ne", room1, checkInDate, checkOutDate);
         hotelResource.bookARoom("kak@eje.ne", room1, checkInDate, checkOutDate);
     }
 

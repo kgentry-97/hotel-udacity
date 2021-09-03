@@ -11,4 +11,6 @@ public class FreeRoom extends Room{
     public String toString(){
         return String.format("Room: %s has a %s bed that is free", getRoomNumber(), getRoomType());
     }
+
+
 }

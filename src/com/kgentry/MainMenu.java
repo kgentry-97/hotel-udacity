@@ -100,14 +100,14 @@ public class MainMenu {
         if (!checkedAvailableRooms.isEmpty()) {
             bookedRoom = getBookedRoom(reserveScanner, checkInDate, checkOutDate, checkedAvailableRooms);
         }
-        if(bookedRoom == null || checkedAvailableRooms.isEmpty()) {
+        if (bookedRoom == null || checkedAvailableRooms.isEmpty()) {
             System.out.println("looking for alternative dates:");
             System.out.println("how many days in the future would you like try");
             String additionalDays = reserveScanner.nextLine();
             bookedRoom = findAltRoom(reserveScanner, checkInDate, checkOutDate, additionalDays);
         }
 
-        if(bookedRoom != null) {
+        if (bookedRoom != null) {
 
             System.out.println("Enter email for account: ");
             String email = reserveScanner.nextLine();
@@ -120,8 +120,7 @@ public class MainMenu {
             Reservation reservation = hotelResource.bookARoom(email, room, checkInDate, checkOutDate);
             System.out.println("room reserved successfully:");
             System.out.println(reservation.toString());
-        }
-        else{
+        } else {
             System.out.println("no room found");
             System.out.println("Returning to main menu");
         }
@@ -146,14 +145,26 @@ public class MainMenu {
     }
 
     private String getBookedRoom(Scanner reserveScanner, Date checkInDate, Date checkOutDate, Collection<IRoom> availableRooms) {
+        boolean finished = false;
         String bookedRoom = null;
-        printAvailableRooms(availableRooms, checkInDate, checkOutDate);
-        System.out.println("Would you like to book one of these rooms: yes or no");
-        String bookRoom = reserveScanner.nextLine();
-        if(bookRoom.equalsIgnoreCase("yes") || bookRoom.equalsIgnoreCase("y")){
-            System.out.println("enter the room number you would like:");
-            bookedRoom = reserveScanner.nextLine();
-        }
+        do {
+
+            printAvailableRooms(availableRooms, checkInDate, checkOutDate);
+            System.out.println("Would you like to book one of these rooms: yes or no");
+            String bookRoom = reserveScanner.nextLine();
+            if (bookRoom.equalsIgnoreCase("yes") || bookRoom.equalsIgnoreCase("y")) {
+                System.out.println("enter the room number you would like:");
+                bookedRoom = reserveScanner.nextLine();
+            }
+            for (IRoom rooms : availableRooms) {
+                if (rooms.getRoomNumber().equals(bookedRoom)) {
+                    finished = true;
+                }
+            }
+            if (!finished) {
+                System.out.println("room entered isn't in the list of available room please try again");
+            }
+        } while (!finished);
         return bookedRoom;
     }
 
